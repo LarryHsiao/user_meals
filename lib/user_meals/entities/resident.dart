@@ -1,4 +1,4 @@
-class Person {
+class Resident {
   int id() => 0;
 
   String name() => "";

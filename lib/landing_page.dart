@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:user_meals/chart_page.dart';
 import 'package:user_meals/meal_page.dart';
-import 'package:user_meals/person_page.dart';
+import 'package:user_meals/resident_page.dart';
 
 class LandingPage extends StatefulWidget {
   const LandingPage({Key? key, required this.title}) : super(key: key);
@@ -14,11 +14,11 @@ class LandingPage extends StatefulWidget {
 }
 
 class _LandingPageState extends State<LandingPage> {
-  static const int INDEX_PAGE_USER = 0;
-  static const int INDEX_PAGE_MEAL = 1;
-  static const int INDEX_PAGE_CHART = 2;
+  static const int indexPageUser = 0;
+  static const int indexPageMeal = 1;
+  static const int indexPageChart = 2;
 
-  var _currentPageIndex = INDEX_PAGE_USER;
+  var _currentPageIndex = indexPageUser;
 
   void _incrementCounter() {
     setState(() {});
@@ -26,13 +26,13 @@ class _LandingPageState extends State<LandingPage> {
 
   Widget _pageWidget() {
     switch (_currentPageIndex) {
-      case INDEX_PAGE_MEAL:
+      case indexPageMeal:
         return const MealPageWidget();
-      case INDEX_PAGE_CHART:
+      case indexPageChart:
         return const ChartPageWidget();
       default:
         /* case INDEX_PAGE_USER */
-        return const PersonPageWidget();
+        return const ResidentPageWidget();
     }
   }
 
@@ -66,7 +66,7 @@ class _LandingPageState extends State<LandingPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,
-        tooltip: 'Increment',
+        tooltip: 'New resident',
         child: const Icon(Icons.add),
       ),
     );

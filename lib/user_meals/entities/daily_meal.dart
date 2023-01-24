@@ -1,7 +1,7 @@
 class DailyMeal {
   int id() => 0;
 
-  int userId() => 0;
+  int residentId() => 0;
 
   bool breakfast() => false;
 
