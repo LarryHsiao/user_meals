@@ -37,7 +37,7 @@ class _ResidentPageWidgetState extends State<ResidentPageWidget> {
 
   Widget _bodyWidget() {
     if (_residents.isEmpty) {
-      return _emptyWidget();
+      return UtilsMisc.emptyWidget();
     } else {
       return ListView.builder(
         padding: const EdgeInsets.all(8),
@@ -49,37 +49,7 @@ class _ResidentPageWidgetState extends State<ResidentPageWidget> {
 
   Widget _itemWidget(Resident resident) {
     return Card(
-      child: Row(
-        children: [
-          const Icon(Icons.person),
-          Column(
-            children: [
-              Text(resident.name()),
-              Row(
-                children: [
-                  Text(resident.birthdayMillis().toString()),
-                  Text(resident.age().toString()),
-                ],
-              )
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _emptyWidget() {
-    return Center(
-      child: Container(
-        alignment: Alignment.center,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: const <Widget>[
-            Text("沒有住民資料"),
-            Text("點選\"+\"新增住民"),
-          ],
-        ),
-      ),
+      child: UtilsMisc.residentItemWidget(resident),
     );
   }
 }
