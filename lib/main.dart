@@ -15,7 +15,7 @@ class UserMealApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const LandingPage(title: 'Flutter Demo Home Page'),
+      home: const LandingPage(title: 'Resident meal'),
     );
   }
 }

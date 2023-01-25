@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:user_meals/user_meals/entities/resident.dart';
+import 'package:user_meals/user_meals/get_resident.dart';
+import 'package:user_meals/utils_misc.dart';
 
 class ResidentPageWidget extends StatefulWidget {
   const ResidentPageWidget({Key? key}) : super(key: key);
@@ -14,6 +16,16 @@ class _ResidentPageWidgetState extends State<ResidentPageWidget> {
   @override
   void initState() {
     super.initState();
+    GetResident()
+        .execute()
+        .then((value) => setState(() {
+              _residents.addAll(value);
+            }))
+        .onError(
+      (error, stackTrace) {
+        UtilsMisc.onError(context, error.toString());
+      },
+    );
   }
 
   @override
@@ -30,15 +42,30 @@ class _ResidentPageWidgetState extends State<ResidentPageWidget> {
       return ListView.builder(
         padding: const EdgeInsets.all(8),
         itemCount: _residents.length,
-        itemBuilder: (context, idx) {
-          return Container(
-            child: Center(
-              child: Text("Text"),
-            ),
-          );
-        },
+        itemBuilder: (context, idx) => _itemWidget(_residents[idx]),
       );
     }
+  }
+
+  Widget _itemWidget(Resident resident) {
+    return Card(
+      child: Row(
+        children: [
+          const Icon(Icons.person),
+          Column(
+            children: [
+              Text(resident.name()),
+              Row(
+                children: [
+                  Text(resident.birthdayMillis().toString()),
+                  Text(resident.age().toString()),
+                ],
+              )
+            ],
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _emptyWidget() {
