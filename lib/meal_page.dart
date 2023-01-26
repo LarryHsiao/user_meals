@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:ffi';
 
 import 'package:flutter/material.dart';
@@ -5,6 +6,7 @@ import 'package:user_meals/user_meals/entities/daily_meal.dart';
 import 'package:user_meals/user_meals/entities/resident.dart';
 import 'package:user_meals/user_meals/get_daily_meals.dart';
 import 'package:user_meals/user_meals/get_resident.dart';
+import 'package:user_meals/user_meals/update_daily_meal.dart';
 import 'package:user_meals/utils_misc.dart';
 
 class MealPageWidget extends StatefulWidget {
@@ -52,7 +54,16 @@ class _MealPageWidgetState extends State<MealPageWidget> {
     );
   }
 
+  void _updateMeal(DailyMeal meal) {
+    UpdateDailyMeal().execute(meal).then((value) => setState(() {
+      _meals[meal.residentId()] = meal;
+    })).onError(
+        (error, stackTrace) => UtilsMisc.onError(context, error.toString()));
+  }
+
   Widget _itemWidget(Resident resident) {
+    final dailyMeal = _meals[resident.id()] ??
+        ConstDailyMeal(false, false, -1, false, resident.id());
     return Card(
       child: Column(
         children: [
@@ -60,18 +71,39 @@ class _MealPageWidgetState extends State<MealPageWidget> {
           Row(children: [
             const Text("供餐"),
             Checkbox(
-              value: false,
-              onChanged: (newValue) {},
+              value: dailyMeal.breakfast(),
+              onChanged: (newValue) {
+                _updateMeal(UpdatedDailyMeal(
+                  dailyMeal,
+                  newValue,
+                  null,
+                  null,
+                ));
+              },
             ),
             const Text("早餐"),
             Checkbox(
-              value: false,
-              onChanged: (newValue) {},
+              value: dailyMeal.lunch(),
+              onChanged: (newValue) {
+                _updateMeal(UpdatedDailyMeal(
+                  dailyMeal,
+                  null,
+                  newValue,
+                  null,
+                ));
+              },
             ),
             const Text("午餐"),
             Checkbox(
-              value: false,
-              onChanged: (newValue) {},
+              value: dailyMeal.dinner(),
+              onChanged: (newValue) {
+                _updateMeal(UpdatedDailyMeal(
+                  dailyMeal,
+                  null,
+                  null,
+                  newValue,
+                ));
+              },
             ),
             const Text("晚餐"),
           ]),

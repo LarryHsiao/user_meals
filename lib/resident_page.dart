@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:user_meals/user_meals/delete_resident.dart';
 import 'package:user_meals/user_meals/entities/resident.dart';
 import 'package:user_meals/user_meals/get_resident.dart';
 import 'package:user_meals/utils_misc.dart';
@@ -49,7 +50,20 @@ class _ResidentPageWidgetState extends State<ResidentPageWidget> {
 
   Widget _itemWidget(Resident resident) {
     return Card(
-      child: UtilsMisc.residentItemWidget(resident),
+      child: Row(children: [
+        UtilsMisc.residentItemWidget(resident),
+        GestureDetector(
+          onTap: () {
+            DeleteResident().execute().then((value) {
+              _residents.remove(resident);
+              setState(() {});
+            }).onError((error, stackTrace) {
+              UtilsMisc.onError(context, error.toString());
+            });
+          },
+          child: const Icon(Icons.delete),
+        )
+      ]),
     );
   }
 }

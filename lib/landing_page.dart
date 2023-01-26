@@ -59,6 +59,19 @@ class _LandingPageState extends State<LandingPage> {
                 TextField(
                   controller: birthdayController,
                   decoration: const InputDecoration(labelText: "生日"),
+                  onTap: () {
+                    showDatePicker(
+                      context: context,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime(1970),
+                      lastDate: DateTime.now(),
+                    ).then((value) {
+                      birthdayController.text = value.toString();
+                      ageController.text =
+                          (DateTime.now().year - (value ?? DateTime.now()).year)
+                              .toString();
+                    });
+                  },
                 ),
                 TextField(
                   controller: ageController,

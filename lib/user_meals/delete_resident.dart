@@ -1,5 +1,5 @@
 class DeleteResident {
   Future<void> execute() {
-    return Future.error("not implemented");
+    return Future.value(null);
   }
 }

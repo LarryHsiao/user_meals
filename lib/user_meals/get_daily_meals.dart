@@ -3,6 +3,6 @@ import 'package:user_meals/user_meals/entities/resident.dart';
 
 class GetDailyMeals {
   Future<List<DailyMeal>> execute() {
-    return Future.error("not implemented");
+    return Future.value(List.empty());
   }
 }

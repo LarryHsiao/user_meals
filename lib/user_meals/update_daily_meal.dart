@@ -1,7 +1,7 @@
 import 'package:user_meals/user_meals/entities/daily_meal.dart';
 
-class UpdateDailyMealByUser {
+class UpdateDailyMeal {
   Future<void> execute(DailyMeal dailyMeal) {
-    return Future.error("not implemented");
+    return Future.value(null);
   }
 }
