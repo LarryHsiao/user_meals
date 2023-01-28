@@ -1,6 +1,3 @@
-import 'dart:convert';
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:user_meals/user_meals/entities/daily_meal.dart';
 import 'package:user_meals/user_meals/entities/resident.dart';
