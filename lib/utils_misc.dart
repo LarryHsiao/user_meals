@@ -25,6 +25,10 @@ class UtilsMisc {
   }
 
   static Widget residentItemWidget(Resident resident) {
+    final birthday =
+        DateTime.fromMicrosecondsSinceEpoch(resident.birthdayMillis());
+    final birthdayString =
+        "${birthday.year.toString()}-${birthday.month.toString().padLeft(2, '0')}-${birthday.day.toString().padLeft(2, '0')}  ";
     return Row(
       children: [
         const Icon(Icons.person),
@@ -32,9 +36,16 @@ class UtilsMisc {
           children: [
             Text(resident.name()),
             Row(
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Text(resident.birthdayMillis().toString()),
-                Text(resident.age().toString()),
+                Text(
+                  '生日:$birthdayString',
+                  textAlign: TextAlign.start,
+                ),
+                Text(
+                  '年齡:${resident.age().toString()}',
+                  textAlign: TextAlign.start,
+                ),
               ],
             )
           ],

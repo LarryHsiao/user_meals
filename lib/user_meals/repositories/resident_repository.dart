@@ -24,33 +24,31 @@ class StoredResidentRepository implements ResidentRepository {
   static const String keyResidentMillis = "millis";
   static const String keyResidentName = "name";
   final LocalStorage storage;
+  final Map<int, Resident> memoryResidents = {};
 
   StoredResidentRepository(this.storage);
 
   @override
   Future<int> createResident(String name, int birthdayMillis, int age) async {
-    final residents = await getResidents();
-    final residentMap = {
-      for (var resident in residents) resident.id(): resident
-    };
+    await getResidents();
     var id = 1;
-    if (residentMap.isNotEmpty) {
-      id = residentMap.keys.reduce(max) + 1;
+    if (memoryResidents.isNotEmpty) {
+      id = memoryResidents.keys.reduce(max) + 1;
     }
-    residentMap[id] = ConstResident(age, birthdayMillis, id, name);
-    _save(residentMap.values.toList());
+    memoryResidents[id] = ConstResident(age, birthdayMillis, id, name);
+    await _save();
     return Future(() => id);
   }
 
   @override
   Future<void> deleteResident(int id) async {
-    final residents = await getResidents();
-    residents.removeWhere((element) => element.id() == id);
-    _save(residents);
+    await getResidents();
+    memoryResidents.remove(id);
+    await _save();
   }
 
-  void _save(List<Resident> residents) {
-    final List<Map<String, dynamic>>json = residents.map((e) {
+  Future<void> _save() async {
+    final List<Map<String, dynamic>> json = memoryResidents.values.map((e) {
       Map<String, dynamic> map = {};
       map[keyResidentId] = e.id();
       map[keyResidentAge] = e.age();
@@ -58,20 +56,23 @@ class StoredResidentRepository implements ResidentRepository {
       map[keyResidentName] = e.name();
       return map;
     }).toList();
-    storage.setItem(keyResidents, json);
+    await storage.setItem(keyResidents, json);
   }
 
   @override
   Future<List<Resident>> getResidents() {
-    final rawItems = storage.getItem(keyResidents) ?? [];
-    final items = (rawItems as List).map((e) {
-      return ConstResident(
-        e[keyResidentAge],
-        e[keyResidentMillis],
-        e[keyResidentId],
-        e[keyResidentName],
-      );
-    }).toList();
-    return Future.value(items);
+    if (memoryResidents.isEmpty) {
+      final rawItems = storage.getItem(keyResidents) ?? [];
+      final items = (rawItems as List).map((e) {
+        return ConstResident(
+          e[keyResidentAge],
+          e[keyResidentMillis],
+          e[keyResidentId],
+          e[keyResidentName],
+        );
+      }).toList();
+      memoryResidents.addAll({for (var item in items) item.id(): item});
+    }
+    return Future.value(memoryResidents.values.toList());
   }
 }

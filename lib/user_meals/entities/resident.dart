@@ -26,5 +26,11 @@ class ConstResident implements Resident {
   int id() => _id;
 
   @override
-  String name() => _name;
+  String name() {
+    if (_name.isEmpty) {
+      return "無名氏";
+    } else {
+      return _name;
+    }
+  }
 }

@@ -6,11 +6,11 @@ import 'package:user_meals/user_meals/repositories/daily_meals_repository.dart';
 
 void main() {
   final storage = LocalStorage("temp.json");
-  storage.clear();
   final repo = StoredDailyMealsRepository(storage);
   test(
     "No meals at first",
     () async {
+      await storage.clear();
       final result = await repo.getDailyMeals();
       expect(result.isEmpty, equals(true));
     },
@@ -42,9 +42,9 @@ void main() {
     "Count of meals.",
     () async {
       // Due to the entry has been created, assert the counters.
-      expect(repo.getTotalBreakfastCount(), 1);
-      expect(repo.getTotalLunchCount(), 1);
-      expect(repo.getTotalDinnerCount(), 1);
+      expect(await repo.getTotalBreakfastCount(), 1);
+      expect(await repo.getTotalLunchCount(), 1);
+      expect(await repo.getTotalDinnerCount(), 1);
     },
   );
 }

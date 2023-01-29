@@ -8,7 +8,7 @@ class CreateResident {
   CreateResident(this.repo, this.dailyMealsRepository);
 
   Future<int> execute(String name, int birthday, age) {
-    return repo.createResident(name, birthday, age).then((value) async{
+    return repo.createResident(name, birthday, age).then((value) async {
       await dailyMealsRepository.createDailyMeals(false, false, false, value);
       return value;
     });

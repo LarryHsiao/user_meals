@@ -3,15 +3,19 @@ import 'package:user_meals/user_meals/repositories/daily_meals_repository.dart';
 import 'package:user_meals/user_meals/repositories/resident_repository.dart';
 
 class RepositoryFactory {
-  final LocalStorage storage;
+  final LocalStorage _storage;
+  ResidentRepository? _residentRepo;
+  DailyMealsRepository? _dailyMealsRepo;
 
-  RepositoryFactory(this.storage);
+  RepositoryFactory(this._storage);
 
   DailyMealsRepository dailyMealsRepository() {
-    return StoredDailyMealsRepository(storage);
+    _dailyMealsRepo ??= StoredDailyMealsRepository(_storage);
+    return _dailyMealsRepo!;
   }
 
   ResidentRepository residentRepository() {
-    return StoredResidentRepository(storage);
+    _residentRepo ??= StoredResidentRepository(_storage);
+    return _residentRepo!;
   }
 }

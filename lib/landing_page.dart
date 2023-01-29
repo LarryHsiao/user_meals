@@ -22,6 +22,7 @@ class _LandingPageState extends State<LandingPage> {
   static const int indexPageChart = 2;
 
   var _currentPageIndex = indexPageUser;
+  int userAction = 0;
 
   void _onCreateResidentPressed() {
     showCreateResidentDialog()
@@ -32,17 +33,19 @@ class _LandingPageState extends State<LandingPage> {
   Widget _pageWidget() {
     switch (_currentPageIndex) {
       case indexPageMeal:
-        return const MealPageWidget();
+        return MealPageWidget(key: Key(userAction.toString()));
       case indexPageChart:
-        return const ChartPageWidget();
+        return ChartPageWidget(key: Key(userAction.toString()));
       default:
         /* case INDEX_PAGE_USER */
-        return const ResidentPageWidget();
+        return ResidentPageWidget(key: Key(userAction.toString()));
     }
   }
 
   Future<void> showCreateResidentDialog() async {
     final createResident = Provider.of<CreateResident>(context, listen: false);
+    var age = 0;
+    var birthday = 0;
     await showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -68,10 +71,11 @@ class _LandingPageState extends State<LandingPage> {
                       firstDate: DateTime(1970),
                       lastDate: DateTime.now(),
                     ).then((value) {
+                      birthday = value?.millisecondsSinceEpoch ?? 0;
                       birthdayController.text = value.toString();
-                      ageController.text =
-                          (DateTime.now().year - (value ?? DateTime.now()).year)
-                              .toString();
+                      age =
+                          DateTime.now().year - (value ?? DateTime.now()).year;
+                      ageController.text = age.toString();
                     });
                   },
                 ),
@@ -90,14 +94,17 @@ class _LandingPageState extends State<LandingPage> {
                       onPressed: () async {
                         Navigator.pop(context);
                         createResident
-                            .execute(nameController.value.text, 0, 0)
-                            .then((value) => setState(() {}))
-                            .onError(
-                              (error, stackTrace) => UtilsMisc.onError(
-                                context,
-                                error.toString() + nameController.value.text,
-                              ),
-                            );
+                            .execute(nameController.value.text, birthday, age)
+                            .then((value) {
+                          setState(() {
+                            userAction++;
+                          });
+                        }).onError((error, stackTrace) {
+                          UtilsMisc.onError(
+                            context,
+                            error.toString() + nameController.value.text,
+                          );
+                        });
                       },
                       child: const Text("新增"),
                     ),

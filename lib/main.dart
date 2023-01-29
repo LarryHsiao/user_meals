@@ -9,9 +9,7 @@ import 'package:user_meals/user_meals/get_resident.dart';
 import 'package:user_meals/user_meals/get_total_breakfast_count.dart';
 import 'package:user_meals/user_meals/get_total_dinner_count.dart';
 import 'package:user_meals/user_meals/get_total_lunch_count.dart';
-import 'package:user_meals/user_meals/repositories/daily_meals_repository.dart';
 import 'package:user_meals/user_meals/repositories/repository_factory.dart';
-import 'package:user_meals/user_meals/repositories/resident_repository.dart';
 import 'package:user_meals/user_meals/update_daily_meal.dart';
 
 final storage = LocalStorage("stored.json");

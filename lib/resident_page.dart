@@ -56,21 +56,24 @@ class _ResidentPageWidgetState extends State<ResidentPageWidget> {
 
   Widget _itemWidget(Resident resident) {
     return Card(
-      child: Row(children: [
-        UtilsMisc.residentItemWidget(resident),
-        GestureDetector(
-          onTap: () {
-            Provider.of<DeleteResident>(context,listen: false)
-                .execute(resident.id())
-                .then((value) {
-              setState(() => _residents.remove(resident));
-            }).onError((error, stackTrace) {
-              UtilsMisc.onError(context, error.toString());
-            });
-          },
-          child: const Icon(Icons.delete),
-        )
-      ]),
+      child: Container(
+        padding: const EdgeInsets.all(8),
+        child: Row(children: [
+          UtilsMisc.residentItemWidget(resident),
+          GestureDetector(
+            onTap: () {
+              Provider.of<DeleteResident>(context, listen: false)
+                  .execute(resident.id())
+                  .then((value) {
+                setState(() => _residents.remove(resident));
+              }).onError((error, stackTrace) {
+                UtilsMisc.onError(context, error.toString());
+              });
+            },
+            child: const Icon(Icons.delete),
+          )
+        ]),
+      ),
     );
   }
 }

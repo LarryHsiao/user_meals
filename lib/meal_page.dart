@@ -29,7 +29,9 @@ class _MealPageWidgetState extends State<MealPageWidget> {
       }).onError((error, stackTrace) {
         UtilsMisc.onError(context, error.toString());
       });
-      Provider.of<GetDailyMeals>(context, listen: false).execute().then((value) {
+      Provider.of<GetDailyMeals>(context, listen: false)
+          .execute()
+          .then((value) {
         _meals.addAll({for (var e in value) e.residentId(): e});
         setState(() {});
       }).onError((error, stackTrace) {
@@ -56,7 +58,7 @@ class _MealPageWidgetState extends State<MealPageWidget> {
   }
 
   void _updateMeal(DailyMeal meal) {
-   Provider.of<UpdateDailyMeal>(context, listen: false)
+    Provider.of<UpdateDailyMeal>(context, listen: false)
         .execute(meal)
         .then((value) => setState(() {
               _meals[meal.residentId()] = meal;
@@ -69,49 +71,52 @@ class _MealPageWidgetState extends State<MealPageWidget> {
     final dailyMeal = _meals[resident.id()] ??
         ConstDailyMeal(false, false, -1, false, resident.id());
     return Card(
-      child: Column(
-        children: [
-          UtilsMisc.residentItemWidget(resident),
-          Row(children: [
-            const Text("供餐"),
-            Checkbox(
-              value: dailyMeal.breakfast(),
-              onChanged: (newValue) {
-                _updateMeal(UpdatedDailyMeal(
-                  dailyMeal,
-                  newValue,
-                  null,
-                  null,
-                ));
-              },
-            ),
-            const Text("早餐"),
-            Checkbox(
-              value: dailyMeal.lunch(),
-              onChanged: (newValue) {
-                _updateMeal(UpdatedDailyMeal(
-                  dailyMeal,
-                  null,
-                  newValue,
-                  null,
-                ));
-              },
-            ),
-            const Text("午餐"),
-            Checkbox(
-              value: dailyMeal.dinner(),
-              onChanged: (newValue) {
-                _updateMeal(UpdatedDailyMeal(
-                  dailyMeal,
-                  null,
-                  null,
-                  newValue,
-                ));
-              },
-            ),
-            const Text("晚餐"),
-          ]),
-        ],
+      child: Container(
+        padding: const EdgeInsets.all(8),
+        child: Column(
+          children: [
+            UtilsMisc.residentItemWidget(resident),
+            Row(children: [
+              const Text("供餐"),
+              Checkbox(
+                value: dailyMeal.breakfast(),
+                onChanged: (newValue) {
+                  _updateMeal(UpdatedDailyMeal(
+                    dailyMeal,
+                    newValue,
+                    null,
+                    null,
+                  ));
+                },
+              ),
+              const Text("早餐"),
+              Checkbox(
+                value: dailyMeal.lunch(),
+                onChanged: (newValue) {
+                  _updateMeal(UpdatedDailyMeal(
+                    dailyMeal,
+                    null,
+                    newValue,
+                    null,
+                  ));
+                },
+              ),
+              const Text("午餐"),
+              Checkbox(
+                value: dailyMeal.dinner(),
+                onChanged: (newValue) {
+                  _updateMeal(UpdatedDailyMeal(
+                    dailyMeal,
+                    null,
+                    null,
+                    newValue,
+                  ));
+                },
+              ),
+              const Text("晚餐"),
+            ]),
+          ],
+        ),
       ),
     );
   }
