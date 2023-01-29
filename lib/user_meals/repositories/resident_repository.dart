@@ -15,6 +15,10 @@ class ResidentRepository {
   Future<List<Resident>> getResidents() {
     return Future.value(List.empty());
   }
+
+  Future<void> updateResident(int id, String name, int birthday, int age) {
+    return Future.value(null);
+  }
 }
 
 class StoredResidentRepository implements ResidentRepository {
@@ -74,5 +78,18 @@ class StoredResidentRepository implements ResidentRepository {
       memoryResidents.addAll({for (var item in items) item.id(): item});
     }
     return Future.value(memoryResidents.values.toList());
+  }
+
+  @override
+  Future<void> updateResident(
+      int id, String name, int birthday, int age) async {
+    await getResidents();
+    final resident = memoryResidents[id];
+    if (resident == null) {
+      return Future.error("Id of Resident not exist: $id");
+    } else {
+      memoryResidents[id] = ConstResident(age, birthday, id, name);
+      await _save();
+    }
   }
 }

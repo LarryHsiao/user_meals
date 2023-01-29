@@ -25,9 +25,24 @@ class _LandingPageState extends State<LandingPage> {
   int userAction = 0;
 
   void _onCreateResidentPressed() {
-    showCreateResidentDialog()
-        .then((value) => setState(() {}))
-        .onError((error, stackTrace) => null);
+    UtilsMisc.showCreateResidentDialog(context, (
+      String name,
+      int birthday,
+      int age,
+    ) {
+      Provider.of<CreateResident>(context, listen: false)
+          .execute(name, birthday, age)
+          .then((value) {
+        setState(() {
+          userAction++;
+        });
+      }).onError((error, stackTrace) {
+        UtilsMisc.onError(
+          context,
+          error.toString() + name,
+        );
+      });
+    }).then((value) => setState(() {})).onError((error, stackTrace) => null);
   }
 
   Widget _pageWidget() {
@@ -40,80 +55,6 @@ class _LandingPageState extends State<LandingPage> {
         /* case INDEX_PAGE_USER */
         return ResidentPageWidget(key: Key(userAction.toString()));
     }
-  }
-
-  Future<void> showCreateResidentDialog() async {
-    final createResident = Provider.of<CreateResident>(context, listen: false);
-    var age = 0;
-    var birthday = 0;
-    await showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          final nameController = TextEditingController();
-          final birthdayController = TextEditingController();
-          final ageController = TextEditingController();
-          return Dialog(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Text("新增住民"),
-                TextField(
-                  controller: nameController,
-                  decoration: const InputDecoration(labelText: "姓名"),
-                ),
-                TextField(
-                  controller: birthdayController,
-                  decoration: const InputDecoration(labelText: "生日"),
-                  onTap: () {
-                    showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime(1970),
-                      lastDate: DateTime.now(),
-                    ).then((value) {
-                      birthday = value?.millisecondsSinceEpoch ?? 0;
-                      birthdayController.text = value.toString();
-                      age =
-                          DateTime.now().year - (value ?? DateTime.now()).year;
-                      ageController.text = age.toString();
-                    });
-                  },
-                ),
-                TextField(
-                  controller: ageController,
-                  decoration: const InputDecoration(labelText: "年齡"),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    TextButton(
-                      onPressed: () => Navigator.pop(context),
-                      child: const Text("取消"),
-                    ),
-                    TextButton(
-                      onPressed: () async {
-                        Navigator.pop(context);
-                        createResident
-                            .execute(nameController.value.text, birthday, age)
-                            .then((value) {
-                          setState(() {
-                            userAction++;
-                          });
-                        }).onError((error, stackTrace) {
-                          UtilsMisc.onError(
-                            context,
-                            error.toString() + nameController.value.text,
-                          );
-                        });
-                      },
-                      child: const Text("新增"),
-                    ),
-                  ],
-                )
-              ],
-            ),
-          );
-        });
   }
 
   @override

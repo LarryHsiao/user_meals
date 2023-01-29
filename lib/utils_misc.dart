@@ -24,11 +24,14 @@ class UtilsMisc {
     );
   }
 
+  static String getBirthdayString(DateTime birthday) {
+    return "${birthday.year.toString()}-${birthday.month.toString().padLeft(2, '0')}-${birthday.day.toString().padLeft(2, '0')}  ";
+  }
+
   static Widget residentItemWidget(Resident resident) {
     final birthday =
-        DateTime.fromMicrosecondsSinceEpoch(resident.birthdayMillis());
-    final birthdayString =
-        "${birthday.year.toString()}-${birthday.month.toString().padLeft(2, '0')}-${birthday.day.toString().padLeft(2, '0')}  ";
+        DateTime.fromMillisecondsSinceEpoch(resident.birthdayMillis());
+    final birthdayString = getBirthdayString(birthday);
     return Row(
       children: [
         const Icon(Icons.person),
@@ -52,5 +55,75 @@ class UtilsMisc {
         ),
       ],
     );
+  }
+
+  static Future<void> showCreateResidentDialog(
+      BuildContext context, Function onSavePressed,
+      {name = "", age = 0, birthday = 0}) async {
+    await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          final nameController = TextEditingController(text: name);
+          final birthdayController = TextEditingController(
+              text: UtilsMisc.getBirthdayString(
+                  DateTime.fromMillisecondsSinceEpoch(birthday)));
+          final ageController = TextEditingController(text: "$age");
+          return Dialog(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text("新增住民"),
+                TextField(
+                  controller: nameController,
+                  decoration: const InputDecoration(labelText: "姓名"),
+                ),
+                TextField(
+                  controller: birthdayController,
+                  decoration: const InputDecoration(labelText: "生日"),
+                  readOnly: true,
+                  onTap: () {
+                    showDatePicker(
+                      context: context,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime(1970),
+                      lastDate: DateTime.now(),
+                    ).then((value) {
+                      birthday = value?.millisecondsSinceEpoch ?? 0;
+                      if (value == null) {
+                        birthdayController.text = "";
+                      } else {
+                        birthdayController.text =
+                            UtilsMisc.getBirthdayString(value);
+                      }
+                      age = DateTime.now().year - (value ?? DateTime.now()).year;
+                      ageController.text = age.toString();
+                    });
+                  },
+                ),
+                TextField(
+                  controller: ageController,
+                  readOnly: true,
+                  decoration: const InputDecoration(labelText: "年齡"),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text("取消"),
+                    ),
+                    TextButton(
+                      onPressed: () async {
+                        Navigator.pop(context);
+                        onSavePressed(nameController.value.text, birthday, age);
+                      },
+                      child: const Text("儲存"),
+                    ),
+                  ],
+                )
+              ],
+            ),
+          );
+        });
   }
 }

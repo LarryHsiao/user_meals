@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:user_meals/user_meals/UpdateResident.dart';
 import 'package:user_meals/user_meals/delete_resident.dart';
 import 'package:user_meals/user_meals/entities/resident.dart';
 import 'package:user_meals/user_meals/get_resident.dart';
-import 'package:user_meals/user_meals/repositories/resident_repository.dart';
 import 'package:user_meals/utils_misc.dart';
 
 class ResidentPageWidget extends StatefulWidget {
@@ -27,9 +27,13 @@ class _ResidentPageWidgetState extends State<ResidentPageWidget> {
   void _getResidents() {
     Provider.of<GetResident>(context, listen: false)
         .execute()
-        .then((value) => setState(() => _residents.addAll(value)))
+        .then((value) =>
+        setState(() {
+          _residents.clear();
+          _residents.addAll(value);
+        }))
         .onError(
-      (error, stackTrace) {
+          (error, stackTrace) {
         UtilsMisc.onError(context, error.toString());
       },
     );
@@ -71,9 +75,31 @@ class _ResidentPageWidgetState extends State<ResidentPageWidget> {
               });
             },
             child: const Icon(Icons.delete),
+          ),
+          GestureDetector(
+            onTap: () {
+              UtilsMisc.showCreateResidentDialog(context,
+                      (String name, int birthday, int age) {
+                    _updateResident(resident.id(), name, birthday, age);
+                  },
+                  name: resident.name(),
+                  age: resident.age(),
+                  birthday: resident.birthdayMillis());
+            },
+            child: const Icon(Icons.edit),
           )
         ]),
       ),
     );
+  }
+
+  void _updateResident(int id, String name, int birthday, int age) {
+    Provider.of<UpdateResident>(context, listen: false)
+        .execute(id, name, birthday, age)
+        .then((value) {
+      setState(() {
+        _getResidents();
+      });
+    });
   }
 }

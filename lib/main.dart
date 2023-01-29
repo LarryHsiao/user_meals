@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:provider/provider.dart';
 import 'package:user_meals/landing_page.dart';
+import 'package:user_meals/user_meals/UpdateResident.dart';
 import 'package:user_meals/user_meals/create_resident.dart';
 import 'package:user_meals/user_meals/delete_resident.dart';
 import 'package:user_meals/user_meals/get_daily_meals.dart';
@@ -48,7 +49,8 @@ class UserMealApp extends StatelessWidget {
           Provider<GetTotalDinnerCount>(
               create: (_) => GetTotalDinnerCount(dailyMealRepo)),
           Provider<UpdateDailyMeal>(
-              create: (_) => UpdateDailyMeal(dailyMealRepo))
+              create: (_) => UpdateDailyMeal(dailyMealRepo)),
+          Provider<UpdateResident>(create: (_) => UpdateResident(residentRepo)),
         ],
         builder: (context, child) => const LandingPage(title: 'Resident meal'),
       ),
