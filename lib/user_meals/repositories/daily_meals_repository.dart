@@ -26,6 +26,10 @@ class DailyMealsRepository {
     return Future.value(null);
   }
 
+  Future<void> deleteDailyMealByResidentId(int id) {
+    return Future.value(null);
+  }
+
   Future<int> getTotalBreakfastCount() {
     return Future.value(0);
   }
@@ -159,5 +163,14 @@ class StoredDailyMealsRepository implements DailyMealsRepository {
     } else {
       return Future.error("Id of DailyMeal not exist: $id");
     }
+  }
+
+  @override
+  Future<void> deleteDailyMealByResidentId(int residentId) async {
+    final meals = await getDailyMeals();
+    meals.removeWhere((element) => element.residentId() == residentId);
+    final mealsMap = {for (var entry in meals) entry.id(): entry};
+    _save(mealsMap);
+    return Future.value(null);
   }
 }

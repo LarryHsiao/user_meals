@@ -39,7 +39,8 @@ class UserMealApp extends StatelessWidget {
               create: (_) => CreateResident(residentRepo, dailyMealRepo)),
           Provider<GetResident>(create: (_) => GetResident(residentRepo)),
           Provider<GetDailyMeals>(create: (_) => GetDailyMeals(dailyMealRepo)),
-          Provider<DeleteResident>(create: (_) => DeleteResident(residentRepo)),
+          Provider<DeleteResident>(
+              create: (_) => DeleteResident(residentRepo, dailyMealRepo)),
           Provider<UpdateDailyMeal>(
               create: (_) => UpdateDailyMeal(dailyMealRepo)),
           Provider<GetTotalBreakfastCount>(
