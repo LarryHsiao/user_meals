@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:user_meals/user_meals/delete_resident.dart';
 import 'package:user_meals/user_meals/entities/resident.dart';
 import 'package:user_meals/user_meals/get_resident.dart';
+import 'package:user_meals/user_meals/repositories/resident_repository.dart';
 import 'package:user_meals/utils_misc.dart';
 
 class ResidentPageWidget extends StatefulWidget {
@@ -17,11 +19,15 @@ class _ResidentPageWidgetState extends State<ResidentPageWidget> {
   @override
   void initState() {
     super.initState();
-    GetResident()
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      _getResidents();
+    });
+  }
+
+  void _getResidents() {
+    Provider.of<GetResident>(context, listen: false)
         .execute()
-        .then((value) => setState(() {
-              _residents.addAll(value);
-            }))
+        .then((value) => setState(() => _residents.addAll(value)))
         .onError(
       (error, stackTrace) {
         UtilsMisc.onError(context, error.toString());
@@ -54,9 +60,10 @@ class _ResidentPageWidgetState extends State<ResidentPageWidget> {
         UtilsMisc.residentItemWidget(resident),
         GestureDetector(
           onTap: () {
-            DeleteResident().execute().then((value) {
-              _residents.remove(resident);
-              setState(() {});
+            Provider.of<DeleteResident>(context,listen: false)
+                .execute(resident.id())
+                .then((value) {
+              setState(() => _residents.remove(resident));
             }).onError((error, stackTrace) {
               UtilsMisc.onError(context, error.toString());
             });

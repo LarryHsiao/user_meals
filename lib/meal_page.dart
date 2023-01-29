@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:user_meals/user_meals/entities/daily_meal.dart';
 import 'package:user_meals/user_meals/entities/resident.dart';
 import 'package:user_meals/user_meals/get_daily_meals.dart';
 import 'package:user_meals/user_meals/get_resident.dart';
+import 'package:user_meals/user_meals/repositories/resident_repository.dart';
 import 'package:user_meals/user_meals/update_daily_meal.dart';
 import 'package:user_meals/utils_misc.dart';
 
@@ -20,17 +22,19 @@ class _MealPageWidgetState extends State<MealPageWidget> {
   @override
   void initState() {
     super.initState();
-    GetResident().execute().then((value) {
-      _residents.addAll(value);
-      setState(() {});
-    }).onError((error, stackTrace) {
-      UtilsMisc.onError(context, error.toString());
-    });
-    GetDailyMeals().execute().then((value) {
-      _meals.addAll({for (var e in value) e.residentId(): e});
-      setState(() {});
-    }).onError((error, stackTrace) {
-      UtilsMisc.onError(context, error.toString());
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      Provider.of<GetResident>(context, listen: false).execute().then((value) {
+        _residents.addAll(value);
+        setState(() {});
+      }).onError((error, stackTrace) {
+        UtilsMisc.onError(context, error.toString());
+      });
+      Provider.of<GetDailyMeals>(context, listen: false).execute().then((value) {
+        _meals.addAll({for (var e in value) e.residentId(): e});
+        setState(() {});
+      }).onError((error, stackTrace) {
+        UtilsMisc.onError(context, error.toString());
+      });
     });
   }
 
@@ -52,10 +56,13 @@ class _MealPageWidgetState extends State<MealPageWidget> {
   }
 
   void _updateMeal(DailyMeal meal) {
-    UpdateDailyMeal().execute(meal).then((value) => setState(() {
-      _meals[meal.residentId()] = meal;
-    })).onError(
-        (error, stackTrace) => UtilsMisc.onError(context, error.toString()));
+   Provider.of<UpdateDailyMeal>(context, listen: false)
+        .execute(meal)
+        .then((value) => setState(() {
+              _meals[meal.residentId()] = meal;
+            }))
+        .onError((error, stackTrace) =>
+            UtilsMisc.onError(context, error.toString()));
   }
 
   Widget _itemWidget(Resident resident) {

@@ -54,7 +54,7 @@ class StoredDailyMealsRepository implements DailyMealsRepository {
   @override
   Future<List<DailyMeal>> getDailyMeals() {
     final rawMeals = storage.getItem(keyDailyMeals) ?? [];
-    final meals = (rawMeals as List)
+    final List<DailyMeal> meals = (rawMeals as List)
         .map((e) => ConstDailyMeal(
               e[keyDailyMealFieldBreakfast],
               e[keyDailyMealFieldDinner],
@@ -123,7 +123,7 @@ class StoredDailyMealsRepository implements DailyMealsRepository {
       map[keyDailyMealFieldDinner] = e.dinner();
       map[keyDailyMealFieldResidentId] = e.residentId();
       return map;
-    });
+    }).toList();
     storage.setItem(keyDailyMeals, mealsJson);
   }
 
@@ -136,7 +136,12 @@ class StoredDailyMealsRepository implements DailyMealsRepository {
   ) async {
     final meals = await getDailyMeals();
     final mealsMap = {for (var entry in meals) entry.id(): entry};
-    final newId = meals.map((e) => e.id()).reduce(max) + 1;
+    final int newId;
+    if (mealsMap.isNotEmpty) {
+      newId = meals.map((e) => e.id()).reduce(max) + 1;
+    } else {
+      newId = 1;
+    }
     mealsMap[newId] =
         ConstDailyMeal(breakfast, dinner, newId, lunch, residentId);
     _save(mealsMap);

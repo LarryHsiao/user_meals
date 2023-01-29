@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:user_meals/user_meals/entities/daily_meal.dart';
+import 'package:provider/provider.dart';
 import 'package:user_meals/user_meals/get_total_breakfast_count.dart';
 import 'package:user_meals/user_meals/get_total_dinner_count.dart';
 import 'package:user_meals/user_meals/get_total_lunch_count.dart';
@@ -20,15 +20,15 @@ class _ChartPageWidgetState extends State<ChartPageWidget> {
   @override
   void initState() {
     super.initState();
-    GetTotalBreakfastCount()
+    Provider.of<GetTotalBreakfastCount>(context, listen: false)
         .execute()
         .then((value) => _breakfastCount = value)
         .whenComplete(() => setState(() {}));
-    GetTotalLunchCount()
+    Provider.of<GetTotalLunchCount>(context, listen: false)
         .execute()
         .then((value) => _lunchCount = value)
         .whenComplete(() => setState(() {}));
-    GetTotalDinnerCount()
+    Provider.of<GetTotalDinnerCount>(context, listen: false)
         .execute()
         .then((value) => _dinnerCount = value)
         .whenComplete(() => setState(() {}));

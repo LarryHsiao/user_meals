@@ -50,14 +50,15 @@ class StoredResidentRepository implements ResidentRepository {
   }
 
   void _save(List<Resident> residents) {
-    storage.setItem(keyResidents, residents.map((e) {
+    final List<Map<String, dynamic>>json = residents.map((e) {
       Map<String, dynamic> map = {};
       map[keyResidentId] = e.id();
       map[keyResidentAge] = e.age();
       map[keyResidentMillis] = e.birthdayMillis();
       map[keyResidentName] = e.name();
       return map;
-    }).toList());
+    }).toList();
+    storage.setItem(keyResidents, json);
   }
 
   @override

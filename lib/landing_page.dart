@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
 import 'package:user_meals/chart_page.dart';
 import 'package:user_meals/meal_page.dart';
 import 'package:user_meals/resident_page.dart';
@@ -41,6 +42,7 @@ class _LandingPageState extends State<LandingPage> {
   }
 
   Future<void> showCreateResidentDialog() async {
+    final createResident = Provider.of<CreateResident>(context, listen: false);
     await showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -87,8 +89,8 @@ class _LandingPageState extends State<LandingPage> {
                     TextButton(
                       onPressed: () async {
                         Navigator.pop(context);
-                        CreateResident()
-                            .execute(nameController.value.text, 0)
+                        createResident
+                            .execute(nameController.value.text, 0, 0)
                             .then((value) => setState(() {}))
                             .onError(
                               (error, stackTrace) => UtilsMisc.onError(
