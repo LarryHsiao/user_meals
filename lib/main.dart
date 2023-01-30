@@ -13,15 +13,18 @@ import 'package:user_meals/user_meals/get_total_lunch_count.dart';
 import 'package:user_meals/user_meals/repositories/repository_factory.dart';
 import 'package:user_meals/user_meals/update_daily_meal.dart';
 
-final storage = LocalStorage("stored.json");
-final repoFactory = RepositoryFactory(storage);
-
 void main() {
-  runApp(const UserMealApp());
+  final storage = LocalStorage("stored.json");
+  storage.getItem("residents");
+  final repoFactory = RepositoryFactory(storage);
+  runApp(UserMealApp(repoFactory));
+  storage.dispose();
 }
 
 class UserMealApp extends StatelessWidget {
-  const UserMealApp({Key? key}) : super(key: key);
+  final RepositoryFactory repoFactory;
+
+  const UserMealApp(this.repoFactory, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

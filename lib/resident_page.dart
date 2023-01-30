@@ -20,7 +20,9 @@ class _ResidentPageWidgetState extends State<ResidentPageWidget> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      _getResidents();
+      Future.delayed(const Duration(milliseconds: 500), (){
+        _getResidents();
+      });
     });
   }
 
